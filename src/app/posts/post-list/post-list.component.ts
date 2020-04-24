@@ -6,7 +6,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-post-list",
   templateUrl: "./post-list.component.html",
-  styleUrls: ["./post-list.component.css"]
+  styleUrls: ["./post-list.component.css"],
 })
 export class PostListComponent implements OnInit, OnDestroy {
   //   posts = [
@@ -16,14 +16,19 @@ export class PostListComponent implements OnInit, OnDestroy {
   //   ];
 
   posts: Post[] = [];
+  isLoading = false;
   private postsSub: Subscription = new Subscription();
   constructor(public postService: PostsService) {}
 
   ngOnInit(): void {
+    this.isLoading = !(this.posts === null || this.posts.length === 0);
+
     this.postService.getPosts();
+
     this.postsSub = this.postService
       .getPostUpdateListener()
       .subscribe((posts: Post[]) => {
+        this.isLoading = false;
         this.posts = posts;
       });
   }
